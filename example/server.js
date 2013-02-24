@@ -1,17 +1,35 @@
 var http = require('http');
 var shux = require('../');
-var sh = shux(require('./keys/server.json'));
+var shx = shux(require('./keys/server.json'));
+var zbuf = new Buffer([0]);
 
 var server = http.createServer(function (req, res) {
     if (req.url === '/list') {
-        res.end(sh.list().concat('').join('\n'));
+        res.end(shx.list().concat('').join('\n'));
     }
     else if (RegExp('^/open\\b').test(req.url)) {
-        req.pipe(sh.createShell()).pipe(res);
+        var sh = shx.createShell();
+        req.pipe(sh).pipe(res);
+        
+        var iv = setInterval(function () { res.write(zbuf) }, 100);
+        var onend = function () {
+            clearInterval(iv);
+            res.end();
+        };
+        sh.on('close', onend);
+        sh.on('end', onend);
     }
     else if (req.url.split('/')[1] === 'attach') {
         var id = req.url.split('/')[2];
-        req.pipe(sh.attach(id)).pipe(res);
+        req.pipe(shx.attach(id)).pipe(res);
+        
+        var iv = setInterval(function () { res.write(zbuf) }, 100);
+        var onend = function () {
+            clearInterval(iv);
+            res.end();
+        };
+        sh.on('close', onend);
+        sh.on('end', onend);
     }
 });
 server.listen(5000);

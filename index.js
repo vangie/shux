@@ -1,5 +1,6 @@
 var secure = require('secure-peer');
 var pty = require('pty.js');
+var spawn = require('child_process').spawn;
 var muxDemux = require('mux-demux');
 var through = require('through');
 var duplexer = require('duplexer');
@@ -18,16 +19,18 @@ Shux.prototype.list = function () {
 };
 
 Shux.prototype.attach = function (id) {
-    var pts = this.shells[id].pts;
+    var pts = this.shells[id];
     var stdin = through();
-    var stout = through();
+    var stdout = through();
     stdin.pipe(pts, { end: false });
     pts.pipe(stdout);
     return duplexer(stdin, stdout);
 };
 
 Shux.prototype.createShell = function (opts) {
+    var self = this;
     if (!opts) opts = {};
+    
     var cmd = opts.command || 'bash';
     var args = opts.arguments || [];
     if (Array.isArray(cmd)) {
@@ -45,6 +48,10 @@ Shux.prototype.createShell = function (opts) {
         cols: opts.columns,
         rows: opts.rows,
         cwd: opts.cwd
+    });
+    pts.on('exit', function () {
+        delete self.shells[id];
+        pts.emit('end');
     });
     
     this.shells[id] = pts;
