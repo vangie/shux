@@ -4,6 +4,7 @@ var spawn = require('child_process').spawn;
 var muxDemux = require('mux-demux');
 var through = require('through');
 var duplexer = require('duplexer');
+var Terminal = require('headless-terminal');
 
 module.exports = function (keys) {
     return new Shux(keys);
@@ -19,11 +20,15 @@ Shux.prototype.list = function () {
 };
 
 Shux.prototype.attach = function (id) {
-    var pts = this.shells[id];
+    var sh = this.shells[id];
     var stdin = through();
     var stdout = through();
-    stdin.pipe(pts, { end: false });
-    pts.pipe(stdout);
+    stdin.pipe(sh.ps, { end: false });
+    sh.ps.pipe(stdout);
+    
+    process.nextTick(function () {
+        stdout.write(sh.terminal.displayBuffer.toString());
+    });
     return duplexer(stdin, stdout);
 };
 
@@ -61,6 +66,10 @@ Shux.prototype.createShell = function (opts) {
         pts.emit('end');
     });
     
-    this.shells[id] = pts;
+    var term = new Terminal(opts.columns, opts.rows);
+    term.open();
+    pts.on('data', function (buf) { term.write(buf) });
+    
+    this.shells[id] = { ps: pts, terminal: term };
     return this.attach(id);
 };
