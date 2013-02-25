@@ -6,7 +6,6 @@ var href = 'http://localhost:5000/' + process.argv[2]
     + '?columns=' + process.stdout.columns
     + '&rows=' + process.stdout.rows
 ;
-var r = request.post(href);
 var keyboard = through(function (buf) {
     if (buf.length === 1 && buf[0] === 1) return state.meta = true;
     
@@ -16,6 +15,8 @@ var keyboard = through(function (buf) {
     else this.queue(buf);
     state.meta = false;
 });
+
+var r = request.post(href).on('end', process.exit);
 r.pipe(peer(function (stream) {
     keyboard.pipe(stream).pipe(process.stdout);
 })).pipe(r);
@@ -26,5 +27,5 @@ process.stdin.pipe(keyboard);
 
 process.on('exit', function () {
     process.stdin.setRawMode(false);
-    console.log();
+    console.log('\n[shux exited]');
 });
