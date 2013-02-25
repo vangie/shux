@@ -16,7 +16,8 @@ var server = http.createServer(function (req, res) {
     }
     else if (req.url.split('/')[1] === 'attach') {
         var id = req.url.split('/')[2];
-        req.pipe(shx.attach(id)).pipe(res);
+        var sh = shx.attach(id);
+        req.pipe(sh).pipe(res);
         
         var onend = function () { res.end() };
         sh.on('close', onend);

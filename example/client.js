@@ -6,7 +6,7 @@ var r = http.request({
     method: 'POST',
     host: 'localhost',
     port: 5000,
-    path: '/open'
+    path: process.argv[2] ? '/attach/' + process.argv[2] : '/open'
 });
 r.on('response', function (res) { res.pipe(stdout) });
 
