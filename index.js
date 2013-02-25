@@ -5,6 +5,7 @@ var muxDemux = require('mux-demux');
 var through = require('through');
 var duplexer = require('duplexer');
 var Terminal = require('headless-terminal');
+var render = require('./lib/render');
 
 module.exports = function (keys) {
     return new Shux(keys);
