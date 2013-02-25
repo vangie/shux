@@ -3,7 +3,7 @@ var through = require('through');
 var request = require('request');
 var peer = require('secure-peer')(require('./keys/client.json'));
 
-var href = 'http://localhost:5000/shell/' + process.argv[2]
+var href = 'http://localhost:5000/' + process.argv[2]
     + '?columns=' + process.stdout.columns
     + '&rows=' + process.stdout.rows
 ;
