@@ -8,27 +8,32 @@ var r = http.request({
     port: 5000,
     path: '/open'
 });
-r.on('response', function (res) { res.pipe(out) });
+r.on('response', function (res) { res.pipe(stdout) });
 
-var out = through();
-var c = duplexer(r, out);
-c.on('close', function () { process.exit() });
-
-var state = { meta: false };
-process.stdin.pipe(c);
-process.stdin.on('data', function (buf) {
+var stdout = through();
+var stdin = through(function (buf) {
     if (buf.length === 1 && buf[0] === 1) {
         state.meta = true;
     }
     else {
         if (state.meta && buf[0] === 'd'.charCodeAt(0)) {
-            process.exit();
+            this.queue(null);
+            c.destroy();
+        }
+        else {
+            this.queue(buf);
         }
         state.meta = false;
     }
 });
 
+var c = duplexer(r, stdout);
+stdin.pipe(c);
 c.pipe(process.stdout);
+c.on('close', function () { process.exit() });
+
+var state = { meta: false };
+process.stdin.pipe(stdin);
 process.stdin.resume();
 
 process.stdin.setRawMode(true);

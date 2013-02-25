@@ -62,6 +62,5 @@ Shux.prototype.createShell = function (opts) {
     });
     
     this.shells[id] = pts;
-    
-    return pts;
+    return this.attach(id);
 };
