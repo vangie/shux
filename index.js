@@ -19,15 +19,29 @@ Shux.prototype.list = function () {
     return Object.keys(this.shells);
 };
 
-Shux.prototype.attach = function (id) {
+Shux.prototype.attach = function (id, opts) {
+    if (!opts) opts = {};
     var sh = this.shells[id];
+    if (!sh) return;
+    
+    if (opts.columns && opts.rows) {
+        sh.ps.resize(Number(opts.columns), Number(opts.rows));
+    }
+    
     var stdin = through();
     var stdout = through();
+    
     stdin.pipe(sh.ps, { end: false });
     sh.ps.pipe(stdout);
     
     process.nextTick(function () {
-        stdout.write(sh.terminal.displayBuffer.toString());
+        var x = sh.terminal.x + 1;
+        var y = sh.terminal.y + 1;
+        stdout.write(Buffer.concat([
+            Buffer(sh.terminal.displayBuffer.toString()),
+            Buffer([ 0x1b, 0x5b ]),
+            Buffer(y + ';' + x + 'f')
+        ]));
     });
     return duplexer(stdin, stdout);
 };
@@ -42,6 +56,8 @@ Shux.prototype.destroy = function (id, sig) {
 Shux.prototype.createShell = function (opts) {
     var self = this;
     if (!opts) opts = {};
+    if (opts.columns) opts.columns = Number(opts.columns);
+    if (opts.rows) opts.rows = Number(opts.rows);
     
     var cmd = opts.command || 'bash';
     var args = opts.arguments || [];
@@ -55,21 +71,21 @@ Shux.prototype.createShell = function (opts) {
         id = Math.floor(Math.pow(16,4) * Math.random()).toString(16);
     }
     
-    var pts = pty.spawn(cmd, args, {
+    var ps = pty.spawn(cmd, args, {
         cwd: '/',
         cols: opts.columns,
         rows: opts.rows,
         cwd: opts.cwd
     });
-    pts.on('exit', function () {
+    ps.on('exit', function () {
         delete self.shells[id];
-        pts.emit('end');
+        ps.emit('end');
     });
     
     var term = new Terminal(opts.columns, opts.rows);
     term.open();
-    pts.on('data', function (buf) { term.write(buf) });
+    ps.on('data', function (buf) { term.write(buf) });
     
-    this.shells[id] = { ps: pts, terminal: term };
+    this.shells[id] = { ps: ps, terminal: term };
     return this.attach(id);
 };

@@ -2,13 +2,17 @@ var http = require('http');
 var through = require('through');
 var duplexer = require('duplexer');
 
+var href = (process.argv[2] ? '/attach/' + process.argv[2] : '/open')
+    + '?columns=' + process.stdout.columns + '&rows=' + process.stdout.rows
+;
 var r = http.request({
     method: 'POST',
     host: 'localhost',
     port: 5000,
-    path: process.argv[2] ? '/attach/' + process.argv[2] : '/open'
+    path: href
 });
 r.on('response', function (res) { res.pipe(stdout) });
+r.write(new Buffer([ 0, 0x7f ]));
 
 var stdout = through();
 var stdin = through(function (buf) {
@@ -27,6 +31,8 @@ var stdin = through(function (buf) {
     }
 });
 
+process.stdout.write(new Buffer([0x1b,0x63]));
+
 var c = duplexer(r, stdout);
 stdin.pipe(c);
 c.pipe(process.stdout);
@@ -39,4 +45,5 @@ process.stdin.resume();
 process.stdin.setRawMode(true);
 process.on('exit', function () {
     process.stdin.setRawMode(false);
+    console.log();
 });
