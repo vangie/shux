@@ -11,6 +11,7 @@ var r = http.request({
     port: 5000,
     path: href
 });
+r.setTimeout(0);
 r.on('response', function (res) { res.pipe(stdout) });
 r.write(new Buffer([ 0, 0x7f ]));
 

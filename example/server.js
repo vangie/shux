@@ -2,9 +2,11 @@ var http = require('http');
 var shux = require('../');
 var shx = shux(require('./keys/server.json'));
 var qs = require('querystring');
+var VERSION = require('../package.json').version;
 
 var server = http.createServer(function (req, res) {
     var params = qs.parse(req.url.split('?')[1]);
+    res.connection.setTimeout(0);
     
     if (req.url === '/list') {
         res.end(shx.list().concat('').join('\n'));
@@ -26,5 +28,6 @@ var server = http.createServer(function (req, res) {
         sh.on('close', onend);
         sh.on('end', onend);
     }
+    else res.end('shux ' + VERSION)
 });
 server.listen(5000);
