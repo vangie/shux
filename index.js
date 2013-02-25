@@ -39,6 +39,7 @@ Shux.prototype.attach = function (id, opts) {
         var x = sh.terminal.x + 1;
         var y = sh.terminal.y + 1;
         stdout.write(Buffer.concat([
+            Buffer([ 0x1b, 0x63 ]),
             render(sh.terminal.displayBuffer),
             Buffer([ 0x1b, 0x5b ]),
             Buffer(y + ';' + x + 'f')

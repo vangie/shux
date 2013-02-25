@@ -31,8 +31,6 @@ var stdin = through(function (buf) {
     }
 });
 
-process.stdout.write(new Buffer([0x1b,0x63]));
-
 var c = duplexer(r, stdout);
 stdin.pipe(c);
 c.pipe(process.stdout);
