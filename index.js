@@ -38,13 +38,36 @@ Shux.prototype.attach = function (id, opts) {
         var x = sh.terminal.x + 1;
         var y = sh.terminal.y + 1;
         stdout.write(Buffer.concat([
-            Buffer(sh.terminal.displayBuffer.toString()),
+            render(sh.terminal.displayBuffer),
             Buffer([ 0x1b, 0x5b ]),
             Buffer(y + ';' + x + 'f')
         ]));
     });
     return duplexer(stdin, stdout);
 };
+
+function render (dbuf) {
+    var bufs = [], chars = [], mode;
+    
+    for (var i = 0; i < dbuf.data.length; i++) {
+        var row = dbuf.data[i];
+        
+        for (var j = 0; j < row.length; j++) {
+            if (mode !== row[j][0]) {
+                mode = row[j][0];
+                bufs.push(Buffer(chars));
+                var display = mode >> 18;
+                chars = [ 0x1b ].concat(
+                    ('[' + display + 'm').split('')
+                    .map(function (c) { return c.charCodeAt(0) })
+                );
+            }
+            chars.push(row[j][1].charCodeAt(0));
+        }
+    }
+    bufs.push(Buffer(chars));
+    return Buffer.concat(bufs);
+}
 
 Shux.prototype.destroy = function (id, sig) {
     var sh = this.shells[id];
