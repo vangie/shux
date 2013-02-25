@@ -20,4 +20,5 @@ process.stdin.pipe(keyboard);
 
 process.on('exit', function () {
     process.stdin.setRawMode(false);
+    console.log();
 });
