@@ -47,26 +47,48 @@ Shux.prototype.attach = function (id, opts) {
 };
 
 function render (dbuf) {
-    var bufs = [], chars = [], mode;
+    var bufs = [], chars = [];
+    var display, bgColor, fgColor;
     
     for (var i = 0; i < dbuf.data.length; i++) {
         var row = dbuf.data[i];
         
         for (var j = 0; j < row.length; j++) {
-            if (mode !== row[j][0]) {
-                mode = row[j][0];
+            var attr = row[j][0];
+            var d = attr >> 18;
+            var bg = attr & 0xff;
+            var fg = (attr >> 9) & 0x1ff;
+            
+            if (d !== display) {
                 bufs.push(Buffer(chars));
-                var display = mode >> 18;
-                chars = [ 0x1b ].concat(
-                    ('[' + display + 'm').split('')
-                    .map(function (c) { return c.charCodeAt(0) })
-                );
+                chars = [ 0x1b ].concat(toCodes('[' + d + 'm'));
             }
+            
+            if (bg !== bgColor && bg !== 256 && bg !== 0) {
+                bufs.push(Buffer(chars));
+                chars = [ 0x1b ].concat(toCodes('[' + (40 + bg) + 'm'));
+            }
+            
+            if (fg !== fgColor && fg !== 257) {
+                bufs.push(Buffer(chars));
+                chars = [ 0x1b ].concat(toCodes('[' + (30 + fg) + 'm'));
+            }
+            
+            display = d;
+            bgColor = bg;
+            fgColor = fg;
+            
             chars.push(row[j][1].charCodeAt(0));
         }
     }
     bufs.push(Buffer(chars));
     return Buffer.concat(bufs);
+    
+    function toCodes (s) {
+        var codes = [];
+        for (var i = 0; i < s.length; i++) codes.push(s.charCodeAt(i));
+        return codes;
+    }
 }
 
 Shux.prototype.destroy = function (id, sig) {
