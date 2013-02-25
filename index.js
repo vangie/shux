@@ -55,9 +55,12 @@ Shux.prototype.destroy = function (id, sig) {
     return true;
 };
 
-Shux.prototype.createShell = function (opts) {
+Shux.prototype.createShell = function (id, opts) {
     var self = this;
+    if (typeof id === 'object') { opts = id; id = undefined }
     if (!opts) opts = {};
+    id = id || opts.id || Math.floor(Math.pow(16,4)*Math.random()).toString(16);
+    
     if (opts.columns) opts.columns = Number(opts.columns);
     if (opts.rows) opts.rows = Number(opts.rows);
     
@@ -66,11 +69,6 @@ Shux.prototype.createShell = function (opts) {
     if (Array.isArray(cmd)) {
         args = cmd.slice(1);
         cmd = cmd[0];
-    }
-    
-    var id = opts.id;
-    if (id === undefined) {
-        id = Math.floor(Math.pow(16,4) * Math.random()).toString(16);
     }
     
     var ps = pty.spawn(cmd, args, {
