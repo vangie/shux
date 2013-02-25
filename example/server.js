@@ -1,7 +1,6 @@
 var http = require('http');
-var shux = require('../')();
 var qs = require('querystring');
-var VERSION = require('../package.json').version;
+var shux = require('../')();
 var peer = require('secure-peer')(require('./keys/server.json'));
 
 var server = http.createServer(function (req, res) {

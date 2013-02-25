@@ -1,4 +1,3 @@
-var http = require('http');
 var through = require('through');
 var request = require('request');
 var peer = require('secure-peer')(require('./keys/client.json'));
