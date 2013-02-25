@@ -1,7 +1,6 @@
 var http = require('http');
 var shux = require('../');
 var shx = shux(require('./keys/server.json'));
-var zbuf = new Buffer([0]);
 
 var server = http.createServer(function (req, res) {
     if (req.url === '/list') {
@@ -11,11 +10,7 @@ var server = http.createServer(function (req, res) {
         var sh = shx.createShell();
         req.pipe(sh).pipe(res);
         
-        var iv = setInterval(function () { res.write(zbuf) }, 100);
-        var onend = function () {
-            clearInterval(iv);
-            res.end();
-        };
+        var onend = function () { res.end() };
         sh.on('close', onend);
         sh.on('end', onend);
     }
@@ -23,11 +18,7 @@ var server = http.createServer(function (req, res) {
         var id = req.url.split('/')[2];
         req.pipe(shx.attach(id)).pipe(res);
         
-        var iv = setInterval(function () { res.write(zbuf) }, 100);
-        var onend = function () {
-            clearInterval(iv);
-            res.end();
-        };
+        var onend = function () { res.end() };
         sh.on('close', onend);
         sh.on('end', onend);
     }

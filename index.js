@@ -27,6 +27,13 @@ Shux.prototype.attach = function (id) {
     return duplexer(stdin, stdout);
 };
 
+Shux.prototype.destroy = function (id, sig) {
+    var sh = this.shells[id];
+    if (!sh) return false;
+    sh.kill(sig);
+    return true;
+};
+
 Shux.prototype.createShell = function (opts) {
     var self = this;
     if (!opts) opts = {};
