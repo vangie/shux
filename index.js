@@ -1,18 +1,14 @@
-var secure = require('secure-peer');
 var pty = require('pty.js');
-var spawn = require('child_process').spawn;
-var muxDemux = require('mux-demux');
 var through = require('through');
 var duplexer = require('duplexer');
 var Terminal = require('headless-terminal');
 var render = require('./lib/render');
 
-module.exports = function (keys) {
-    return new Shux(keys);
+module.exports = function () {
+    return new Shux();
 };
 
-function Shux (keys) {
-    this.peer = secure(keys);
+function Shux () {
     this.shells = {};
 }
 

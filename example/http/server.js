@@ -1,6 +1,6 @@
 var http = require('http');
 var qs = require('querystring');
-var shux = require('../')();
+var shux = require('../../')();
 var peer = require('secure-peer')(require('./keys/server.json'));
 var authorized = [ require('./keys/client.json').public ];
 
