@@ -13,7 +13,6 @@ var r = http.request({
 });
 r.setTimeout(0);
 r.on('response', function (res) { res.pipe(stdout) });
-r.write(new Buffer([ 0, 0x7f ]));
 
 var stdout = through();
 var stdin = through(function (buf) {
