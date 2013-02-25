@@ -41,7 +41,10 @@ Shux.prototype.attach = function (id, opts) {
             Buffer(y + ';' + x + 'f')
         ]));
     });
-    return duplexer(stdin, stdout);
+    
+    var dup = duplexer(stdin, stdout);
+    dup.id = id;
+    return dup;
 };
 
 Shux.prototype.destroy = function (id, sig) {

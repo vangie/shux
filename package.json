@@ -1,0 +1,36 @@
+{
+    "name": "shux",
+    "version": "0.0.0",
+    "description": "streaming shell multiplexer",
+    "main": "index.js",
+    "dependencies": {
+        "pty.js": "~0.1.3",
+        "duplexer": "~0.0.3",
+        "headless-terminal": "0.0.3",
+        "through": "~2.2.0"
+    },
+    "devDependencies": {
+        "secure-peer": "~0.2.0",
+        "request": "~2.14.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/substack/shux.git"
+    },
+    "homepage": "https://github.com/substack/shux",
+    "keywords": [
+        "shell",
+        "multiplex",
+        "terminal",
+        "tmux",
+        "screen",
+        "attach",
+        "detach"
+    ],
+    "author": {
+        "name": "James Halliday",
+        "email": "mail@substack.net",
+        "url": "http://substack.net"
+    },
+    "license": "MIT"
+}
