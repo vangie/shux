@@ -2,9 +2,15 @@ var test = require('tap').test;
 var shux = require('../');
 
 test('sh', function (t) {
-    t.plan(1);
+    t.plan(2);
     
     var shx = shux();
+    var times = { spawn: 0, exit: 0, attach: 0, detach: 0 };
+    shx.on('spawn', function () { times.spawn ++ });
+    shx.on('exit', function () { times.exit ++ });
+    shx.on('attach', function () { times.attach ++ });
+    shx.on('detach', function () { times.detach ++ });
+    
     var sh0 = shx.createShell('xyz');
     
     var c = 0;
@@ -36,6 +42,10 @@ test('sh', function (t) {
             clearInterval(iv);
             sh1.end();
             shx.destroy('xyz');
+            
+            setTimeout(function () {
+                t.same(times, { spawn: 1, exit: 1, attach: 2, detach: 2 });
+            }, 100);
         }, 500);
     });
 });

@@ -3,6 +3,8 @@ var through = require('through');
 var duplexer = require('duplexer');
 var Terminal = require('headless-terminal');
 var render = require('./lib/render');
+var EventEmitter = require('events').EventEmitter;
+var inherits = require('inherits');
 
 module.exports = function () {
     return new Shux();
@@ -11,6 +13,8 @@ module.exports = function () {
 function Shux () {
     this.shells = {};
 }
+
+inherits(Shux, EventEmitter);
 
 Shux.prototype.list = function () {
     return Object.keys(this.shells);
@@ -44,6 +48,9 @@ Shux.prototype.attach = function (id, opts) {
     
     var dup = duplexer(stdin, stdout);
     dup.id = id;
+    
+    this.emit('attach', id);
+    stdin.on('end', this.emit.bind(this, 'detach', id));
     return dup;
 };
 
@@ -78,6 +85,7 @@ Shux.prototype.createShell = function (id, opts) {
     });
     ps.on('exit', function () {
         delete self.shells[id];
+        self.emit('exit', id);
         ps.emit('end');
     });
     
@@ -86,5 +94,6 @@ Shux.prototype.createShell = function (id, opts) {
     ps.on('data', function (buf) { term.write(buf) });
     
     this.shells[id] = { ps: ps, terminal: term };
+    this.emit('spawn', id);
     return this.attach(id);
 };
