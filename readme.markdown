@@ -101,6 +101,24 @@ Send a kill signal to the shell process at `id`, if it exists.
 
 Return a list of the active shell id strings.
 
+# events
+
+## shx.on('spawn', function (id) {})
+
+When a subshell gets spawned, the `'spawn'` event fires for that shell `id`.
+
+## shx.on('exit', function (id) {})
+
+When a subshell exits, the `'exit'` event fires for that shell `id`.
+
+## shx.on('attach', function (id) {})
+
+When a subshell is attached, the `'attach'` event fires for that shell `id`.
+
+## shx.on('detach', function (id) {})
+
+When a subshell is detached, the `'detach'` event fires for that shell `id`.
+
 # install
 
 With [npm](https://npmjs.org) do:
