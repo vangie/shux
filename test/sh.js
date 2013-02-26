@@ -1,6 +1,5 @@
 var test = require('tap').test;
 var shux = require('../');
-var through = require('through');
 
 test('sh', function (t) {
     t.plan(1);
