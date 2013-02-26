@@ -7,10 +7,14 @@ test('sh', function (t) {
     var shx = shux();
     var sh0 = shx.createShell('xyz');
     
-    sh0.once('data', function () {
+    var c = 0;
+    sh0.on('data', function ondata () {
+        if (++c < 2) return;
+        sh0.removeListener('data', ondata);
+        
         setTimeout(function () {
             sh0.write('echo beep boop');
-        }, 1000);
+        }, 100);
     });
     
     var data0 = '';
@@ -26,8 +30,10 @@ test('sh', function (t) {
         sh1.write('\n');
         sh1.on('data', function (buf) { data1 += buf });
         
-        setTimeout(function () {
+        var iv = setInterval(function () {
+            if (data1.match(/beep boop/g).length < 2) return;
             t.equal(data1.match(/beep boop/g).length, 2);
+            clearInterval(iv);
             sh1.end();
             shx.destroy('xyz');
         }, 500);
