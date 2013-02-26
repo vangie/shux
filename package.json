@@ -1,6 +1,6 @@
 {
     "name": "shux",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "description": "streaming shell multiplexer",
     "main": "index.js",
     "dependencies": {
@@ -10,8 +10,12 @@
         "through": "~2.2.0"
     },
     "devDependencies": {
+        "tap": "~0.4.0",
         "secure-peer": "~0.2.0",
         "request": "~2.14.0"
+    },
+    "scripts": {
+        "test": "tap test/*.js"
     },
     "repository": {
         "type": "git",
