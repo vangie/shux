@@ -50,7 +50,7 @@ Shux.prototype.attach = function (id, opts) {
 Shux.prototype.destroy = function (id, sig) {
     var sh = this.shells[id];
     if (!sh) return false;
-    sh.kill(sig);
+    sh.ps.kill(sig === undefined ? 'SIGKILL' : sig);
     return true;
 };
 
