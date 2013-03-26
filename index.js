@@ -34,6 +34,7 @@ Shux.prototype.attach = function (id, opts) {
     
     stdin.pipe(sh.ps, { end: false });
     sh.ps.pipe(stdout);
+    sh.ps.on('end', dup.emit.bind(dup, 'end'));
     
     process.nextTick(function () {
         var x = sh.terminal.x + 1;
@@ -84,7 +85,6 @@ Shux.prototype.createShell = function (id, opts) {
         cwd: opts.cwd
     });
     ps.on('exit', function () {
-        self.shells[id].ps.emit('end');
         delete self.shells[id];
         self.emit('exit', id);
         ps.emit('end');
