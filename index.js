@@ -34,7 +34,6 @@ Shux.prototype.attach = function (id, opts) {
     
     stdin.pipe(sh.ps, { end: false });
     sh.ps.pipe(stdout);
-    sh.ps.on('end', dup.emit.bind(dup, 'end'));
     
     process.nextTick(function () {
         var x = sh.terminal.x + 1;
@@ -48,6 +47,7 @@ Shux.prototype.attach = function (id, opts) {
     });
     
     var dup = duplexer(stdin, stdout);
+    sh.ps.on('end', dup.emit.bind(dup, 'end'));
     dup.id = id;
     
     this.emit('attach', id);
