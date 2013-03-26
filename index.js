@@ -84,6 +84,7 @@ Shux.prototype.createShell = function (id, opts) {
         cwd: opts.cwd
     });
     ps.on('exit', function () {
+        self.shells[id].ps.emit('end');
         delete self.shells[id];
         self.emit('exit', id);
         ps.emit('end');
