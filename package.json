@@ -6,7 +6,7 @@
     "dependencies": {
         "pty.js": "~0.2.1",
         "duplexer": "~0.0.3",
-        "headless-terminal": "0.0.3",
+        "headless-terminal": "0.4.0",
         "through": "~2.2.0",
         "inherits": "~1.0.0"
     },
