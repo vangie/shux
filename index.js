@@ -6,6 +6,15 @@ var render = require('./lib/render');
 var EventEmitter = require('events').EventEmitter;
 var inherits = require('inherits');
 
+pty.prototype.kill = function(sig) {
+  try {
+    process.kill(this.pid, sig || 'SIGTERM');
+    waitpid(this.pid);
+  } catch(e) {
+    ;
+  }
+};
+
 module.exports = function () {
     return new Shux();
 };
@@ -95,6 +104,7 @@ Shux.prototype.createShell = function (id, opts) {
         delete self.shells[id];
         self.emit('exit', id);
         ps.emit('end');
+        ps.kill(ps.pid);
     });
     
     var term = new Terminal(opts.columns, opts.rows);

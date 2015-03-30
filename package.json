@@ -1,41 +1,42 @@
 {
-    "name": "shux",
-    "version": "0.2.1",
-    "description": "streaming shell multiplexer",
-    "main": "index.js",
-    "dependencies": {
-        "pty.js": "vangie/pty.js",
-        "duplexer": "~0.0.3",
-        "headless-terminal": "vangie/headless-terminal",
-        "through": "~2.2.0",
-        "inherits": "~1.0.0"
-    },
-    "devDependencies": {
-        "tap": "~0.4.0",
-        "secure-peer": "~0.2.0",
-        "request": "~2.14.0"
-    },
-    "scripts": {
-        "test": "tap test/*.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/substack/shux.git"
-    },
-    "homepage": "https://github.com/substack/shux",
-    "keywords": [
-        "shell",
-        "multiplex",
-        "terminal",
-        "tmux",
-        "screen",
-        "attach",
-        "detach"
-    ],
-    "author": {
-        "name": "James Halliday",
-        "email": "mail@substack.net",
-        "url": "http://substack.net"
-    },
-    "license": "MIT"
+  "name": "shux",
+  "version": "0.2.1",
+  "description": "streaming shell multiplexer",
+  "main": "index.js",
+  "dependencies": {
+    "duplexer": "~0.0.3",
+    "headless-terminal": "vangie/headless-terminal",
+    "inherits": "~1.0.0",
+    "through": "~2.2.0",
+    "tty.js": "^0.2.14",
+    "waitpid": "^0.1.1"
+  },
+  "devDependencies": {
+    "tap": "~0.4.0",
+    "secure-peer": "~0.2.0",
+    "request": "~2.14.0"
+  },
+  "scripts": {
+    "test": "tap test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/substack/shux.git"
+  },
+  "homepage": "https://github.com/substack/shux",
+  "keywords": [
+    "shell",
+    "multiplex",
+    "terminal",
+    "tmux",
+    "screen",
+    "attach",
+    "detach"
+  ],
+  "author": {
+    "name": "James Halliday",
+    "email": "mail@substack.net",
+    "url": "http://substack.net"
+  },
+  "license": "MIT"
 }
