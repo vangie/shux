@@ -1,10 +1,10 @@
 {
   "name": "shux",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "streaming shell multiplexer",
   "main": "index.js",
   "dependencies": {
-    "pty.js": "~0.3.0",
+    "pty.js": "Coding/pty.js#v0.3.1.1",
     "duplexer": "~0.0.3",
     "headless-terminal": "vangie/headless-terminal#v0.5.1",
     "inherits": "~1.0.0",
