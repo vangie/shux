@@ -4,7 +4,7 @@
   "description": "streaming shell multiplexer",
   "main": "index.js",
   "dependencies": {
-    "pty.js": "Coding/pty.js#v0.3.1.1",
+    "pty.js": "Coding/pty.js#v0.3.2",
     "duplexer": "~0.0.3",
     "headless-terminal": "vangie/headless-terminal#v0.5.1",
     "inherits": "~1.0.0",
